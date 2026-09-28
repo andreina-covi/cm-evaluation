@@ -1,0 +1,24 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+.env
+.env.local
+
+# Never keep model weights or episode frames in git
+data/*
+!data/README.md
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+*.joblib

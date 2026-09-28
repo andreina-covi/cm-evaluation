@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cm-evaluation"
+version = "0.1.0"
+description = "Evaluate cm-benchmark spatial-cognition items on vision-language models."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+    "PyYAML>=6.0",
+    "Pillow>=10.0",
+    "huggingface_hub>=0.24",
+    "accelerate>=0.34",
+    "transformers>=4.57.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+benchmark = [
+    "cm-benchmark @ git+https://github.com/andreina-covi/cm-benchmark.git",
+]
+
+[project.scripts]
+cm-eval = "cm_evaluation.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

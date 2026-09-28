@@ -1,0 +1,13 @@
+model_id: Qwen/Qwen3-VL-8B-Instruct
+dtype: auto
+device_map: auto
+# Set to flash_attention_2 on a GPU that supports it (saves VRAM on multi-image).
+attn_implementation: null
+do_sample: false
+max_new_tokens_mcq: 16
+max_new_tokens_nav: 128
+max_new_tokens_smoke: 128
+# Qwen3-VL-8B-Instruct snapshot is ~17.5 GB; refuse download if free space is below this.
+min_free_gb: 25
+# Approximate VRAM for BF16 + multi-image overhead.
+approx_vram_gb: 20

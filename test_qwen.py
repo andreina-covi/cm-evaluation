@@ -1,64 +1,59 @@
-from transformers import AutoModelForImageTextToText, AutoProcessor
+"""Thin wrapper around the smoke CLI (first Qwen3-VL proof).
 
-MODEL_ID = "Qwen/Qwen3-VL-8B-Instruct"
+    python test_qwen.py \\
+      --data-root /path/to/eval-data \\
+      --frames-root /path/to/navigation \\
+      --episode 09_23_2026_16_31_04_526137
+"""
 
-model = AutoModelForImageTextToText.from_pretrained(
-    MODEL_ID,
-    dtype="auto",
-    device_map="auto",
-)
+from __future__ import annotations
 
-processor = AutoProcessor.from_pretrained(MODEL_ID)
+import argparse
+from pathlib import Path
 
-messages = [
-    {
-        "role": "user",
-        "content": [
-            {
-                "type": "image",
-                "image": "file:///absolute/path/frame_001.png",
-            },
-            {
-                "type": "image",
-                "image": "file:///absolute/path/frame_002.png",
-            },
-            {
-                "type": "image",
-                "image": "file:///absolute/path/frame_003.png",
-            },
-            {
-                "type": "text",
-                "text": "Your question here",
-            },
-        ],
-    }
-]
+from cm_evaluation.cli import main as cli_main
 
-inputs = processor.apply_chat_template(
-    messages,
-    tokenize=True,
-    add_generation_prompt=True,
-    return_dict=True,
-    return_tensors="pt",
-)
 
-inputs = inputs.to(model.device)
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Qwen3-VL sequential-image smoke test")
+    parser.add_argument(
+        "--data-root",
+        type=Path,
+        required=True,
+        help="Directory for the Hugging Face cache / model weights.",
+    )
+    parser.add_argument(
+        "--frames-root",
+        type=Path,
+        required=True,
+        help="Root whose children are episode folders with images/img_<t>.png.",
+    )
+    parser.add_argument(
+        "--episode",
+        required=True,
+        help="Episode folder name under --frames-root.",
+    )
+    parser.add_argument("--frames", type=int, nargs="+", default=[0, 1, 2])
+    parser.add_argument(
+        "--question",
+        default="Where is the Window relative to you right now?",
+    )
+    args, extra = parser.parse_known_args()
+    images = [
+        args.frames_root / args.episode / "images" / f"img_{i}.png" for i in args.frames
+    ]
+    argv = [
+        "smoke",
+        "--data-root",
+        str(args.data_root),
+        "--images",
+        *[str(p) for p in images],
+        "--question",
+        args.question,
+        *extra,
+    ]
+    return cli_main(argv)
 
-generated_ids = model.generate(
-    **inputs,
-    max_new_tokens=128,
-    do_sample=False,
-)
 
-generated_ids = [
-    output[len(input_ids):]
-    for input_ids, output in zip(inputs.input_ids, generated_ids)
-]
-
-response = processor.batch_decode(
-    generated_ids,
-    skip_special_tokens=True,
-    clean_up_tokenization_spaces=False,
-)[0]
-
-print(response)
+if __name__ == "__main__":
+    raise SystemExit(main())

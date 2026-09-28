@@ -1,0 +1,50 @@
+{
+  "n_items": 3,
+  "items": [
+    {
+      "item_id": "tiny-ego-001",
+      "construct": "egocentric_encoding",
+      "class": 1,
+      "frame_of_reference": "egocentric",
+      "environment": "ai2thor",
+      "scene_id": "house_tiny",
+      "image_paths": ["frames/img_0.png"],
+      "question": "From your current view, where is the Window relative to you?",
+      "options": {"A": "left", "B": "right", "C": "front", "D": "above"},
+      "answer": "A",
+      "answer_source": ["edges_egocentric"],
+      "status": "ok",
+      "question_style": "concise"
+    },
+    {
+      "item_id": "tiny-swm-001",
+      "construct": "spatial_working_memory",
+      "class": 2,
+      "frame_of_reference": "egocentric",
+      "environment": "ai2thor",
+      "scene_id": "house_tiny",
+      "image_paths": ["frames/img_0.png", "frames/img_1.png"],
+      "question": "Considering what you saw 2 steps ago: where was the Chair relative to you then?",
+      "options": {"A": "left", "B": "right", "C": "front", "D": "behind"},
+      "answer": "C",
+      "answer_source": ["edges_egocentric"],
+      "status": "ok",
+      "question_style": "verbose"
+    },
+    {
+      "item_id": "tiny-route-001",
+      "construct": "route_knowledge",
+      "class": 4,
+      "frame_of_reference": "egocentric",
+      "environment": "ai2thor",
+      "scene_id": "house_tiny",
+      "image_paths": ["frames/img_0.png", "frames/img_1.png"],
+      "question": "List, in order, the navigation actions you took to travel from the Chair to the Table.",
+      "options": {},
+      "answer": "move_ahead, rotate_left, move_ahead",
+      "answer_source": ["nav_graph"],
+      "status": "ok",
+      "question_style": "concise"
+    }
+  ]
+}

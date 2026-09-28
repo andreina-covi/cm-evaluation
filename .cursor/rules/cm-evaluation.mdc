@@ -1,0 +1,34 @@
+---
+description: Core goal and invariants for the cognitive-map VLM evaluation repo
+alwaysApply: true
+---
+
+# cm-evaluation
+
+This repo **evaluates** frozen spatial-cognition items from
+[cm-benchmark](https://github.com/andreina-covi/cm-benchmark). It does not
+generate or edit items.
+
+## Goal
+
+Run VLMs (first: Qwen3-VL-8B-Instruct) on sequential first-person frames plus
+a spatial question. Compare the model output to item `answer` with
+**deterministic code** (no LLM judge). Report accuracy (and later class-4
+success / validity / SPL) **per construct** and per frame of reference.
+
+## Invariants
+
+- Consume items only (`status == ok`). Never regenerate or rewrite questions.
+- System format contract lives in `cm_evaluation.protocol`. Do not bake it
+  into item JSON.
+- Classes 1–3: MCQ letter match. Class 4: action sequence; skip metric
+  scoring until the nav graph is wired — do not fake a letter score.
+- **No hardcoded machine paths.** Roots are CLI arguments (`--data-root`,
+  `--items`, `--frames-root`, `--images`), like cm-benchmark. Pin `HF_HOME`
+  under `--data-root` before importing `transformers`. Do not copy episode
+  frames; resolve them via `--frames-root`.
+
+## First model
+
+`Qwen/Qwen3-VL-8B-Instruct`: multi-image chat, `do_sample=False`, resume-safe
+JSONL predictions. More model runners later, same item/scoring pipeline.
