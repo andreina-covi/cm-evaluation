@@ -21,7 +21,7 @@ class Qwen3VLRunner:
         self,
         model_id: str,
         *,
-        dtype: str = "auto",
+        dtype: str = torch.float16,
         device_map: str = "auto",
         attn_implementation: Optional[str] = None,
         local_files_only: bool = False,

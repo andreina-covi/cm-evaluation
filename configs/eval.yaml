@@ -1,5 +1,5 @@
 model_id: Qwen/Qwen3-VL-8B-Instruct
-dtype: auto
+dtype: torch.float16
 device_map: auto
 # Set to flash_attention_2 on a GPU that supports it (saves VRAM on multi-image).
 attn_implementation: null
