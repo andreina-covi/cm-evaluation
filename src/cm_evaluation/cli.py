@@ -17,7 +17,6 @@ from typing import Optional, Sequence
 from cm_evaluation.paths import (
     ENV_KEEP_HF_ENV,
     QWEN3_VL_8B_DISK_GB,
-    EvalPaths,
     load_eval_config,
     pin_hf_env,
     resolve_paths,
@@ -54,7 +53,7 @@ def _add_frames_root(parser: argparse.ArgumentParser) -> None:
     )
 
 
-def _paths_from_ns(ns: argparse.Namespace) -> EvalPaths:
+def _paths_from_ns(ns: argparse.Namespace):
     return resolve_paths(
         data_root=ns.data_root,
         frames_root=getattr(ns, "frames_root", None),
