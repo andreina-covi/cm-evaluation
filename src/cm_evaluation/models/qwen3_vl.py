@@ -91,7 +91,7 @@ class Qwen3VLRunner:
             if not path.is_file():
                 raise FileNotFoundError(path)
             resolved.append(path)
-            content.append({"type": "image", "image": path.as_uri()})
+            content.append({"type": "image", "image": str(path)})
         content.append({"type": "text", "text": question})
         messages = [
             {"role": "system", "content": system},
