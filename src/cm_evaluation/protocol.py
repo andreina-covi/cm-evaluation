@@ -1,49 +1,23 @@
-"""Eval format contract. Keep in sync with cm-benchmark ``evaluation.protocol``.
+"""Eval format contract: re-export from cm-benchmark.
 
-The Model Runner prepends this once per call. Item ``question`` text stays
-construct-specific and must not repeat the contract.
+``SYSTEM_INSTRUCTION`` and ``wrap_item_for_eval`` live in
+``cm_benchmark.evaluation.protocol``. This package does not copy them.
+
+Install cm-benchmark in the same environment. For protocol edits in a local
+clone to apply on the next run::
+
+    pip install -e /path/to/cm-benchmark
 """
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
-try:
-    from cm_benchmark.evaluation.protocol import (  # type: ignore
-        ACTION_VOCAB,
-        SYSTEM_INSTRUCTION,
-        wrap_item_for_eval,
-    )
-except ImportError:  # cm-benchmark is optional for MCQ-only runs
-    ACTION_VOCAB = (
-        "move_ahead",
-        "rotate_left",
-        "rotate_right",
-        "move_back",
-    )
-    _ACTION_LIST = ", ".join(ACTION_VOCAB)
-    SYSTEM_INSTRUCTION = (
-        "You are answering spatial-cognition questions from first-person views.\n"
-        "\n"
-        "Multiple-choice items: reply with exactly one option letter (A, B, C, or D).\n"
-        "\n"
-        "Navigation-action items (route knowledge and survey-based route planning): "
-        "reply with an ordered sequence using only these action names: "
-        f"{_ACTION_LIST}. Separate actions with commas or arrows. "
-        "Do not add explanation."
-    )
-
-    def wrap_item_for_eval(
-        item: Optional[dict[str, Any]],
-        *,
-        system: str = SYSTEM_INSTRUCTION,
-    ) -> dict[str, str]:
-        rec = item or {}
-        return {
-            "system": system,
-            "question": rec.get("question") or "",
-        }
-
+from cm_benchmark.evaluation.protocol import (
+    ACTION_VOCAB,
+    SYSTEM_INSTRUCTION,
+    wrap_item_for_eval,
+)
 
 MCQ_CONSTRUCTS = {
     "egocentric_encoding",

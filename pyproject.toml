@@ -15,13 +15,11 @@ dependencies = [
     "huggingface_hub>=0.24",
     "accelerate>=0.34",
     "transformers>=4.57.0",
+    "cm-benchmark @ git+https://github.com/andreina-covi/cm-benchmark.git",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
-benchmark = [
-    "cm-benchmark @ git+https://github.com/andreina-covi/cm-benchmark.git",
-]
 
 [project.scripts]
 cm-eval = "cm_evaluation.cli:main"

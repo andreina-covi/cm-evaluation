@@ -157,7 +157,7 @@ def cmd_smoke(ns: argparse.Namespace) -> int:
         max_new_tokens=int(cfg.get("max_new_tokens_smoke") or 128),
         do_sample=False,
     )
-    print(result.text)
+    print("Result:", result.text)
     return 0
 
 

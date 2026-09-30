@@ -9,8 +9,6 @@ accelerate>=0.34
 huggingface_hub>=0.24
 PyYAML>=6.0
 Pillow>=10.0
-
-# Optional: class-4 metric scoring (nav graph). Not required for MCQ eval.
-# pip install "cm-benchmark @ git+https://github.com/andreina-covi/cm-benchmark.git"
+cm-benchmark @ git+https://github.com/andreina-covi/cm-benchmark.git
 
 pytest>=7.0

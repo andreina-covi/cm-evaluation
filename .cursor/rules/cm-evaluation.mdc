@@ -19,8 +19,11 @@ success / validity / SPL) **per construct** and per frame of reference.
 ## Invariants
 
 - Consume items only (`status == ok`). Never regenerate or rewrite questions.
-- System format contract lives in `cm_evaluation.protocol`. Do not bake it
-  into item JSON.
+- System format contract lives in ``cm_benchmark.evaluation.protocol``
+  (imported by `cm_evaluation.protocol`). Do not copy it here or bake it
+  into item JSON. Install cm-benchmark in this env; use
+  `pip install -e /path/to/cm-benchmark` so local protocol edits apply
+  immediately.
 - Classes 1–3: MCQ letter match. Class 4: action sequence; skip metric
   scoring until the nav graph is wired — do not fake a letter score.
 - **No hardcoded machine paths.** Roots are CLI arguments (`--data-root`,
