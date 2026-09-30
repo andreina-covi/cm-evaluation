@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Iterator, Optional
+from typing import Any, Iterator, Optional, Sequence
 
 
 def list_item_jsons(folder: str | Path) -> list[Path]:
@@ -49,7 +49,7 @@ def load_item_file(path: str | Path) -> list[dict[str, Any]]:
 
 
 def iter_items(
-    folder: str | Path,
+    folder: str | Path | Sequence[str | Path],
     *,
     constructs: Optional[set[str]] = None,
     status: str = "ok",
@@ -58,20 +58,22 @@ def iter_items(
 ) -> Iterator[dict[str, Any]]:
     from cm_evaluation.protocol import NAV_CONSTRUCTS
 
+    sources = folder if isinstance(folder, (list, tuple)) else [folder]
     yielded = 0
-    for json_path in list_item_jsons(folder):
-        for item in load_item_file(json_path):
-            if status and item.get("status") != status:
-                continue
-            construct = item.get("construct")
-            if constructs and construct not in constructs:
-                continue
-            if not include_class4 and construct in NAV_CONSTRUCTS:
-                continue
-            yield item
-            yielded += 1
-            if limit is not None and yielded >= limit:
-                return
+    for source in sources:
+        for json_path in list_item_jsons(source):
+            for item in load_item_file(json_path):
+                if status and item.get("status") != status:
+                    continue
+                construct = item.get("construct")
+                if constructs and construct not in constructs:
+                    continue
+                if not include_class4 and construct in NAV_CONSTRUCTS:
+                    continue
+                yield item
+                yielded += 1
+                if limit is not None and yielded >= limit:
+                    return
 
 
 def resolve_image_path(

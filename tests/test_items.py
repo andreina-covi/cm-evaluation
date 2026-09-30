@@ -15,6 +15,12 @@ def test_load_and_filter_class4(tiny_items_json) -> None:
     assert len(all_ok) == 3
 
 
+def test_iter_items_accepts_several_sources(tiny_items_json) -> None:
+    rows = list(iter_items([tiny_items_json, tiny_items_json], include_class4=False))
+    ids = [r["item_id"] for r in rows]
+    assert ids.count("tiny-ego-001") == 2
+
+
 def test_construct_filter_and_limit(tiny_items_json) -> None:
     rows = list(
         iter_items(

@@ -166,9 +166,10 @@ def cmd_evaluate(ns: argparse.Namespace) -> int:
     paths.ensure_layout()
     pin_hf_env(paths)
     cfg = load_eval_config()
-    items_path = ns.items
-    if not Path(items_path).exists():
-        print(f"No items at {items_path}.", file=sys.stderr)
+    item_sources = list(ns.items)
+    missing = [p for p in item_sources if not Path(p).exists()]
+    if missing:
+        print(f"No items at {missing[0]}.", file=sys.stderr)
         return 2
     constructs = {c.strip() for c in (ns.constructs or "").split(",") if c.strip()} or None
     from cm_evaluation.items import iter_items
@@ -183,7 +184,7 @@ def cmd_evaluate(ns: argparse.Namespace) -> int:
         json.dumps(
             {
                 "model_id": model_id,
-                "items": str(items_path),
+                "items": [str(p) for p in item_sources],
                 "constructs": sorted(constructs) if constructs else None,
                 "limit": ns.limit,
                 "include_class4": ns.include_class4,
@@ -203,14 +204,14 @@ def cmd_evaluate(ns: argparse.Namespace) -> int:
     )
     items = list(
         iter_items(
-            items_path,
+            item_sources,
             constructs=constructs,
             include_class4=ns.include_class4,
             limit=ns.limit,
         )
     )
     if not items:
-        print(f"No ok items under {items_path}", file=sys.stderr)
+        print(f"No ok items under {item_sources}", file=sys.stderr)
         return 2
     records = evaluate_items(
         runner,
@@ -266,8 +267,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument(
         "--items",
         type=Path,
+        nargs="+",
         required=True,
-        help="generate_items output: items JSON file, one scene folder, or a root of scene folders.",
+        metavar="PATH",
+        help=(
+            "Path to items JSON, a scene folder, or a root of scene folders "
+            "(items/<scene>/items_<scene>.json). Put the path immediately after "
+            "this flag. Repeat to pass several roots."
+        ),
     )
     p_eval.add_argument("--constructs", default=None, help="Comma-separated construct ids")
     p_eval.add_argument("--limit", type=int, default=None)
