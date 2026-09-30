@@ -41,6 +41,10 @@ python -m cm_evaluation evaluate \
   --frames-root /path/to/navigation \
   --limit 4 \
   --constructs egocentric_encoding
+
+python -m cm_evaluation visualize \
+  --results /path/to/results \
+  --output /path/to/figures
 ```
 
 ```text

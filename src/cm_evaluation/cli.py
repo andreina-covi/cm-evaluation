@@ -228,6 +228,22 @@ def cmd_evaluate(ns: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_visualize(ns: argparse.Namespace) -> int:
+    from cm_evaluation.visualize import visualize
+
+    try:
+        written = visualize(ns.results, ns.output)
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    for path in written:
+        print(path)
+    if not written:
+        print("No figures (empty summary groups).", file=sys.stderr)
+        return 2
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="cm-eval",
@@ -284,6 +300,26 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument("--offline", action="store_true")
     p_eval.add_argument("--no-resume", action="store_true")
     p_eval.set_defaults(func=cmd_evaluate)
+
+    p_viz = sub.add_parser(
+        "visualize",
+        help="Write accuracy and confusion figures from evaluate run folders",
+    )
+    p_viz.add_argument(
+        "--results",
+        type=Path,
+        nargs="+",
+        required=True,
+        metavar="PATH",
+        help="One run directory (summary.json / predictions.jsonl) or a parent of several runs.",
+    )
+    p_viz.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Directory for PNG figures.",
+    )
+    p_viz.set_defaults(func=cmd_visualize)
     return parser
 
 
